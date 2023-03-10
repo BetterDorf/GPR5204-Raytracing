@@ -16,7 +16,10 @@ if(WIN32 AND NOT DEFINED VCPKG_TARGET_TRIPLET)
 endif()
 
 #Tracy
-
+option(ENABLE_PROFILING "Enable profiling" ON)
+if (ENABLE_PROFILING)
+    add_subdirectory(externals/tracy)
+endif()
 		
 #PROGRAM FILES
 file(GLOB_RECURSE SRC_FILES src/*.cpp include/*.hpp)
