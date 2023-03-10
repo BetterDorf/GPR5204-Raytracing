@@ -1,7 +1,0 @@
-# ninja log v5
-31	1032	7001708925037306	CMakeFiles/Raytracer.dir/src/sphere.cpp.obj	47f29d4b25f24837
-11	1034	7001708925047202	CMakeFiles/Raytracer.dir/src/hittable_list.cpp.obj	3396ef7b60ea1037
-5	1048	7001708925205047	CMakeFiles/Raytracer.dir/src/camera.cpp.obj	e57219bdca9b373a
-24	1053	7001708925264241	CMakeFiles/Raytracer.dir/src/material.cpp.obj	f4c62bb183e2b067
-17	1310	7001708927821566	CMakeFiles/Raytracer.dir/src/main.cpp.obj	be3945f4be973527
-1312	1783	7001708929586303	Raytracer.exe	3a8591db6753fd3
