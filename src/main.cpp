@@ -8,7 +8,10 @@
 #include "camera.hpp"
 #include "material.hpp"
 
-#include "forward_list"
+#ifdef TRACY_ENABLE
+#include "tracy/Tracy.hpp"
+#endif
+
 
 hittable_list random_scene() {
 	hittable_list world;
@@ -105,6 +108,10 @@ int main()
 	const camera cam(lookfrom, lookat, vup, fov, aspect_ratio, aperture, dist_to_focus);
 
 	std::cout << "P3\n" << imageWidth << ' ' << imageHeight << "\n255\n";
+
+#ifdef TRACY_ENABLE
+	ZoneScoped;
+#endif
 
 	for (int h = imageHeight - 1; h >= 0; --h)
 	{

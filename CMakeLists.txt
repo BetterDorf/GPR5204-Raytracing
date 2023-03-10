@@ -19,6 +19,8 @@ endif()
 option(ENABLE_PROFILING "Enable profiling" ON)
 if (ENABLE_PROFILING)
     add_subdirectory(externals/tracy)
+    set_target_properties(TracyClient PROPERTIES FOLDER externals/)
+    option(TRACY_NO_EXIT "" ON)
 endif()
 		
 #PROGRAM FILES
@@ -28,6 +30,6 @@ target_include_directories(Raytracer PUBLIC include/)
 
 #Tracy
 if (ENABLE_PROFILING)
-    target_link_libraries(Raytracer PUBLIC TracyClient)
+    target_link_libraries(Raytracer PUBLIC Tracy::TracyClient)
     target_compile_definitions(Raytracer PUBLIC TRACY_ENABLE)
 endif()
