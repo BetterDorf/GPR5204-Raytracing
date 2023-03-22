@@ -105,7 +105,7 @@ int main()
 {
 	// Image
 	constexpr auto aspect_ratio = 4.0 / 3.0;
-	constexpr int imageWidth = 108;
+	constexpr int imageWidth = 1080;
 	constexpr int imageHeight = static_cast<int>(imageWidth / aspect_ratio);
 	constexpr int samples_per_pixel = 50;
 	constexpr int max_depth = 50;

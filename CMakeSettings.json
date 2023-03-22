@@ -35,7 +35,7 @@
       "variables": [
         {
           "name": "ENABLE_PROFILING",
-          "value": "False",
+          "value": "True",
           "type": "BOOL"
         },
         {
