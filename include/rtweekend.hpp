@@ -22,8 +22,20 @@ inline double random_double() {
     return distribution(generator);
 }
 
+struct alignas(2048) test
+{
+    int c;
+};
+struct test2
+{
+    bool c;
+    test a;
+    bool b;
+};
+
 inline double random_double(const double min, const double max) {
     // Returns a random real in [min,max).
+    sizeof(test2);
     return min + (max - min) * random_double();
 }
 

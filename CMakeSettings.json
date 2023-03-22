@@ -35,6 +35,11 @@
       "variables": [
         {
           "name": "ENABLE_PROFILING",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "USE_JOB_SYSTEM",
           "value": "True",
           "type": "BOOL"
         }

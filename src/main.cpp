@@ -7,7 +7,9 @@
 #include "sphere.hpp"
 #include "camera.hpp"
 #include "material.hpp"
+#include "pixels.hpp"
 
+#include "job_system.hpp"
 #ifdef TRACY_ENABLE
 #include "tracy/Tracy.hpp"
 #endif
@@ -62,38 +64,53 @@ hittable_list random_scene() {
 }
 
 // Computes the color for a given ray following a gradient pattern
-color ray_color(const ray& r, const hittable& world, int depth) {
+color ray_color(ray& r, const hittable& world, int depth) {
 	// If we've exceeded the ray bounce limit, no more light is gathered.
 	if (depth <= 0)
 		return color(0, 0, 0);
 
 	hit_record rec;
+	color finalColor(1.0, 1.0, 1.0);
+	color attenuation;
 
-	// check for a hit in front of the camera against the world
-	// 0.001 correct for shadow acne problem where t values of 0.00001 and -0.00001 could be the same
-	if (world.hit(r, 0.001, infinity, rec)) {
-		// Bounce the ray
-		point3 target = rec.P + rec.Normal + random_unit_vector();
-		color attenuation;
-		if (ray scattered; rec.Mat_ptr->scatter(r, rec, attenuation, scattered))
-			return attenuation * ray_color(scattered, world, depth - 1);
-		return color(0, 0, 0);
+	for (int i = 0 ; i < depth ; i++)
+	{
+		if (world.hit(r, 0.001, infinity, rec))
+		{
+			if (ray scattered; rec.Mat_ptr->scatter(r, rec, attenuation, scattered))
+			{
+				finalColor = finalColor * attenuation;
+				r = scattered;
+			}
+			else
+			{
+				return color(0, 0, 0);
+			}
+		}
+		else
+		{
+			const vec3 unit_direction = unit_vector(r.direction());
+			const auto t = 0.5 * (unit_direction.y() + 1.0);
+			const color sky_color = (1.0 - t) * color(1.0, 1.0, 1.0) + t * color(0.5, 0.7, 1.0);
+			return finalColor * sky_color;
+		}
+
+		rec = {};
 	}
 
-	// Make the color depending on where the ray hit
-	const vec3 unit_direction = unit_vector(r.direction());
-	auto t = 0.5 * (unit_direction.y() + 1.0);
-	return (1.0 - t) * color(1.0, 1.0, 1.0) + t * color(0.5, 0.7, 1.0);
+	return color(0, 0, 0);
 }
 
 int main()
 {
 	// Image
 	constexpr auto aspect_ratio = 4.0 / 3.0;
-	constexpr int imageWidth = 1200;
+	constexpr int imageWidth = 108;
 	constexpr int imageHeight = static_cast<int>(imageWidth / aspect_ratio);
-	constexpr int samples_per_pixel = 10;
+	constexpr int samples_per_pixel = 50;
 	constexpr int max_depth = 50;
+
+	pixel_screen screen(imageWidth, imageHeight);
 
 	// World
 	const auto world = random_scene();
@@ -113,19 +130,25 @@ int main()
 	ZoneScoped;
 #endif
 
+#pragma omp parallel for schedule(dynamic)
 	for (int h = imageHeight - 1; h >= 0; --h)
 	{
 		std::cerr << "\rScanlines remaining: " << h << ' ' << std::flush;
 		for (int w = 0; w < imageWidth; ++w)
 		{
+#ifdef TRACY_ENABLE
+			ZoneScoped;
+#endif
 			color pixel_color(0, 0, 0);
 			for (int s = 0; s < samples_per_pixel; ++s) {
 				const auto u = (w + random_double()) / (imageWidth - 1);
 				const auto v = (h + random_double()) / (imageHeight - 1);
 				ray r = cam.get_ray(u, v);
 				pixel_color += ray_color(r, world, max_depth);
+				screen.draw(w, h, pixel_color);
 			}
-			write_color(std::cout, pixel_color, samples_per_pixel);
 		}
 	}
+
+	screen.write_to_stream(std::cout, samples_per_pixel);
 }

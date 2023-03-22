@@ -1,5 +1,9 @@
 #include "sphere.hpp"
 
+#ifdef TRACY_ENABLE
+#include "tracy/Tracy.hpp"
+#endif
+
 bool sphere::hit(const ray& r, const double t_min, const double t_max, hit_record& rec) const {
     const vec3 oc = r.origin() - Center;
     const auto a = r.direction().length_squared();
