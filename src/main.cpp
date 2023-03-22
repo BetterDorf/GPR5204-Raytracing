@@ -9,7 +9,8 @@
 #include "material.hpp"
 #include "pixels.hpp"
 
-#include "job_system.hpp"
+#include "renderer.hpp"
+
 #ifdef TRACY_ENABLE
 #include "tracy/Tracy.hpp"
 #endif
@@ -63,44 +64,6 @@ hittable_list random_scene() {
 	return world;
 }
 
-// Computes the color for a given ray following a gradient pattern
-color ray_color(ray& r, const hittable& world, int depth) {
-	// If we've exceeded the ray bounce limit, no more light is gathered.
-	if (depth <= 0)
-		return color(0, 0, 0);
-
-	hit_record rec;
-	color finalColor(1.0, 1.0, 1.0);
-	color attenuation;
-
-	for (int i = 0 ; i < depth ; i++)
-	{
-		if (world.hit(r, 0.001, infinity, rec))
-		{
-			if (ray scattered; rec.Mat_ptr->scatter(r, rec, attenuation, scattered))
-			{
-				finalColor = finalColor * attenuation;
-				r = scattered;
-			}
-			else
-			{
-				return color(0, 0, 0);
-			}
-		}
-		else
-		{
-			const vec3 unit_direction = unit_vector(r.direction());
-			const auto t = 0.5 * (unit_direction.y() + 1.0);
-			const color sky_color = (1.0 - t) * color(1.0, 1.0, 1.0) + t * color(0.5, 0.7, 1.0);
-			return finalColor * sky_color;
-		}
-
-		rec = {};
-	}
-
-	return color(0, 0, 0);
-}
-
 int main()
 {
 	// Image
@@ -130,25 +93,6 @@ int main()
 	ZoneScoped;
 #endif
 
-#pragma omp parallel for schedule(dynamic)
-	for (int h = imageHeight - 1; h >= 0; --h)
-	{
-		std::cerr << "\rScanlines remaining: " << h << ' ' << std::flush;
-		for (int w = 0; w < imageWidth; ++w)
-		{
-#ifdef TRACY_ENABLE
-			ZoneScoped;
-#endif
-			color pixel_color(0, 0, 0);
-			for (int s = 0; s < samples_per_pixel; ++s) {
-				const auto u = (w + random_double()) / (imageWidth - 1);
-				const auto v = (h + random_double()) / (imageHeight - 1);
-				ray r = cam.get_ray(u, v);
-				pixel_color += ray_color(r, world, max_depth);
-				screen.draw(w, h, pixel_color);
-			}
-		}
-	}
-
-	screen.write_to_stream(std::cout, samples_per_pixel);
+	renderer render(imageWidth, imageHeight);
+	render.render_world(world, cam, samples_per_pixel, max_depth);
 }

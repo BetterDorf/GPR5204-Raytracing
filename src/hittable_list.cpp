@@ -4,7 +4,7 @@
 #include "tracy/Tracy.hpp"
 #endif
 
-bool hittable_list::hit(const ray& r, double t_min, double t_max, hit_record& rec) const {
+bool hittable_list::hit(const ray& r, const double t_min, const double t_max, hit_record& rec) const {
 #ifdef TRACY_ENABLE
     ZoneScoped;
 #endif
