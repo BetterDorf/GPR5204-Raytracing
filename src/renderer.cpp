@@ -81,7 +81,6 @@ void renderer::render_world(const world& world, const camera cam, const int samp
 #pragma omp parallel for schedule(dynamic)
 	for (int h = _height - 1; h >= 0; --h)
 	{
-		std::cerr << "\rScanlines remaining: " << h << ' ' << std::flush;
 		for (int w = 0; w < _width; ++w)
 		{
 			color pixel_color(0, 0, 0);

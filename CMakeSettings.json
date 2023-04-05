@@ -9,7 +9,19 @@
       "installRoot": "${projectDir}\\out\\install\\${name}",
       "cmakeCommandArgs": "",
       "buildCommandArgs": "",
-      "ctestCommandArgs": ""
+      "ctestCommandArgs": "",
+      "variables": [
+        {
+          "name": "TRACY_ENABLE",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "ENABLE_PROFILING",
+          "value": "False",
+          "type": "BOOL"
+        }
+      ]
     },
     {
       "name": "x64-Release",
@@ -34,12 +46,40 @@
       "inheritEnvironments": [ "clang_cl_x64_x64" ],
       "variables": [
         {
+          "name": "TRACY_ENABLE",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
           "name": "ENABLE_PROFILING",
           "value": "False",
           "type": "BOOL"
         },
         {
           "name": "USE_JOB_SYSTEM",
+          "value": "True",
+          "type": "BOOL"
+        }
+      ]
+    },
+    {
+      "name": "x64-Clang-Profiling",
+      "generator": "Ninja",
+      "configurationType": "Release",
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [ "clang_cl_x64_x64" ],
+      "variables": [
+        {
+          "name": "TRACY_ENABLE",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "ENABLE_PROFILING",
           "value": "True",
           "type": "BOOL"
         }

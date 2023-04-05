@@ -20,6 +20,10 @@ void world::add(const point3 cen, const double r, std::shared_ptr<material> m)
 
 void world::construct_bvh()
 {
+#ifdef TRACY_ENABLE
+	ZoneScoped;
+#endif
+
 	if (Spheres.empty())
 	{
 		return;
@@ -31,7 +35,7 @@ void world::construct_bvh()
 	std::bitset<WORLD_SIZE * 2> checked;
 
 	// Agglomerate the spheres into nodes with their closest neighbour
-	for (int i = 0; i < Spheres.size() / 2 + 1; i++)
+	for (int i = 0; i < Spheres.size(); i++)
 	{
 		// Check if sphere was treated already
 		if (checked[i])
@@ -68,13 +72,18 @@ void world::construct_bvh()
 	// Continually fuse nodes until we have one left
 	int iterationCount = 2;
 	int startPoint = 0;
+	checked.reset();
 	while (iterationCount > 1)
 	{
-		checked.reset();
 		iterationCount = 0;
 		const int stopPoint = Nodes.size();
 		for (int i = startPoint; i < stopPoint; i++)
 		{
+			if (checked[i])
+			{
+				continue;
+			}
+
 			double best_dist = std::numeric_limits<double>::max();
 			int best_index = i;
 			for (int j = i + 1 ; j < stopPoint ; j++)
@@ -93,26 +102,12 @@ void world::construct_bvh()
 				}
 			}
 
-			// Move the j node to be skipped if it isn't the same as i
-			// i.e there exists a node after i
+			// Mark both nodes as used
 			checked[i] = true;
 			checked[best_index] = true;
 
-			/*if (best_index != i)
-			{
-				const bvh_node tmp_node = Nodes[best_index];
-				Nodes[best_index] = Nodes[i + 1];
-				Nodes[i + 1] = tmp_node;
-				best_index = i + 1;
-			}
-			else
-			{
-				i = i;
-			}*/
-
 			// Create a new node that holds the two previous ones
-			bvh_node node(&Nodes[i], &Nodes[best_index]);
-			Nodes.emplace_back(node);
+			Nodes.emplace_back(&Nodes[i], &Nodes[best_index]);
 			iterationCount += 1;
 		}
 
@@ -133,6 +128,9 @@ bool world::hit(const ray& r, const double t_min, const double t_max, hit_record
 
 world world::random_scene()
 {
+#ifdef TRACY_ENABLE
+	ZoneScoped;
+#endif
 	world world;
 
 	const auto ground_material = std::make_shared<lambertian>(color(0.5, 0.5, 0.5));
