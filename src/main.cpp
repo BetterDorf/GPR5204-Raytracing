@@ -1,12 +1,6 @@
 #include <iostream>
 
-#include "rtweekend.hpp"
-
-#include "color.hpp"
-#include "hittable_list.hpp"
-#include "sphere.hpp"
 #include "camera.hpp"
-#include "material.hpp"
 #include "pixels.hpp"
 
 #include "renderer.hpp"
@@ -29,7 +23,7 @@ int main()
 	constexpr int max_depth = 30;
 
 	pixel_screen screen(imageWidth, imageHeight);
-
+	
 	// World
 	const auto world = world::random_scene();
 
