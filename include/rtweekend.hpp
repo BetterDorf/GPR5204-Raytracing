@@ -1,8 +1,6 @@
 #pragma once
 
-#include <cmath>
 #include <limits>
-#include <memory>
 #include <random>
 
 // Constants

@@ -1,6 +1,5 @@
 #pragma once
 #include "ray.hpp"
-#include "rtweekend.hpp"
 #include "vec3.hpp"
 
 class aabb

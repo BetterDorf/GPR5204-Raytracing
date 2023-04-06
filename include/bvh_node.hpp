@@ -2,7 +2,6 @@
 
 #include "hittable.hpp"
 #include "aabb.hpp"
-#include <array>
 
 class bvh_node : public hittable {
 public:

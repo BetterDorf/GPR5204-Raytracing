@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ray.hpp"
-#include "rtweekend.hpp"
 
 #include "aabb.hpp"
 

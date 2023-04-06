@@ -67,6 +67,7 @@ void world::construct_bvh()
 		// Mark the j sphere as being treated
 		// No need to mark the i sphere as we won't get to this one ever again
 		checked[i] = true;
+		checked[best_index] = true;
 	}
 
 	// Continually fuse nodes until we have one left

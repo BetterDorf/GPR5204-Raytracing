@@ -28,7 +28,7 @@ endif()
 
 # PROGRAM FILES
 file(GLOB_RECURSE SRC_FILES src/*.cpp include/*.hpp)
-add_executable(Raytracer ${SRC_FILES})
+add_executable(Raytracer main/main.cpp ${SRC_FILES})
 target_include_directories(Raytracer PUBLIC include/)
 target_link_libraries(Raytracer PUBLIC OpenMP::OpenMP_CXX)
 
@@ -43,7 +43,7 @@ file(GLOB BENCH_FILES bench/*.cpp)
 # Benchmarks
 foreach(BENCH_FILE ${BENCH_FILES})
     get_filename_component(BENCH_NAME ${BENCH_FILE} NAME_WE)
-    add_executable(${BENCH_NAME} ${BENCH_FILE})
+    add_executable(${BENCH_NAME} ${BENCH_FILE} ${SRC_FILES})
     target_link_libraries(${BENCH_NAME} PRIVATE benchmark::benchmark benchmark::benchmark_main)
     target_include_directories(${BENCH_NAME} PRIVATE include/)
     if(MSVC)
