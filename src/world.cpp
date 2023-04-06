@@ -126,7 +126,7 @@ bool world::hit(const ray& r, const double t_min, const double t_max, hit_record
 	return Tree->hit(r, t_min, t_max, rec);
 }
 
-world world::random_scene()
+world world::random_scene(const int sqrd_object_count)
 {
 #ifdef TRACY_ENABLE
 	ZoneScoped;
@@ -136,10 +136,10 @@ world world::random_scene()
 	const auto ground_material = std::make_shared<lambertian>(color(0.5, 0.5, 0.5));
 	world.add(point3(0, -1000, 0), 1000, ground_material);
 
-	for (int a = -11; a < 11; a++) {
-		for (int b = -11; b < 11; b++) {
+	for (int a = 0; a < sqrd_object_count; a++) {
+		for (int b = 0; b < sqrd_object_count; b++) {
 			const auto choose_mat = random_double();
-			point3 center(a + 0.9 * random_double(), 0.2, b + 0.9 * random_double());
+			point3 center(a - 11.0 + 0.9 * random_double(), 0.2, b - 11.0 + 0.9 * random_double());
 
 			if ((center - point3(4, 0.2, 0)).length() > 0.9) {
 				std::shared_ptr<material> sphere_material;

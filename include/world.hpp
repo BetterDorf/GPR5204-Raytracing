@@ -27,7 +27,12 @@ public:
 		return Tree->bounding_box();
 	}
 
-	static world random_scene();
+	/**
+	 * \brief Create a world with a seeded random disposition of small spheres and four pre-determined spheres
+	 * \param sqrd_object_count The amount of objects to spawn. The actual number of spawned objects will be sqrd_object_count * sqrd_object_count + 4
+	 * \return The resulting world 
+	 */
+	static world random_scene(int sqrd_object_count);
 
 public:
 	std::vector<sphere> Spheres;

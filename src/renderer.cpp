@@ -72,8 +72,6 @@ void renderer::render_world(const hittable_list& world, const camera cam, const 
 			}
 		}
 	}
-
-	_screen.write_to_stream(std::cout, samples_per_pixel);
 }
 
 void renderer::render_world(const world& world, const camera cam, const int samples_per_pixel, const int max_depth)
@@ -93,6 +91,10 @@ void renderer::render_world(const world& world, const camera cam, const int samp
 			}
 		}
 	}
+}
 
+void renderer::write_out_screen(const int height, const int width, const int samples_per_pixel) const
+{
+	std::cout << "P3\n" << width << ' ' << height << "\n255\n";
 	_screen.write_to_stream(std::cout, samples_per_pixel);
 }

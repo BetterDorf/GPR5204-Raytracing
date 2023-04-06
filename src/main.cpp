@@ -25,7 +25,7 @@ int main()
 	pixel_screen screen(imageWidth, imageHeight);
 	
 	// World
-	const auto world = world::random_scene();
+	const auto world = world::random_scene(20);
 
 	const point3 lookfrom(10, 3, 4);
 	const point3 lookat(0, 0, 1);
@@ -36,12 +36,11 @@ int main()
 
 	const camera cam(lookfrom, lookat, vup, fov, aspect_ratio, aperture, dist_to_focus);
 
-	std::cout << "P3\n" << imageWidth << ' ' << imageHeight << "\n255\n";
-
 #ifdef TRACY_ENABLE
 	ZoneScoped;
 #endif
 
 	renderer render(imageWidth, imageHeight);
 	render.render_world(world, cam, samples_per_pixel, max_depth);
+	render.write_out_screen(imageHeight, imageWidth, samples_per_pixel);
 }
