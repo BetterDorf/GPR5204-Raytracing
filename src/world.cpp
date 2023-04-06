@@ -104,8 +104,8 @@ void world::construct_bvh()
 			}
 
 			// Mark both nodes as used
-			checked[i] = true;
-			checked[best_index] = true;
+			checked.set(i, true);
+			checked.set(best_index, true);
 
 			// Create a new node that holds the two previous ones
 			Nodes.emplace_back(&Nodes[i], &Nodes[best_index]);

@@ -7,28 +7,28 @@
 #include "world.hpp"
 
 constexpr int from = 0;
-constexpr int to = 25;
+constexpr int to = 22;
+
+// Image
+constexpr auto aspect_ratio = 4.0 / 3.0;
+constexpr int imageWidth = 480;
+constexpr int imageHeight = static_cast<int>(imageWidth / aspect_ratio);
+constexpr int samples_per_pixel = 200;
+constexpr int max_depth = 30;
+
+const point3 lookfrom(10, 3, 4);
+const point3 lookat(0, 0, 1);
+const vec3 vup(0, 1, 0);
+constexpr auto fov = 30.0;
+const auto dist_to_focus = (lookfrom - lookat).length();
+constexpr auto aperture = 0.1;
 
 void BM_render(benchmark::State& state)
 {
 	const std::size_t n = state.range(0);
 
-	// Image
-	constexpr auto aspect_ratio = 4.0 / 3.0;
-	constexpr int imageWidth = 480;
-	constexpr int imageHeight = static_cast<int>(imageWidth / aspect_ratio);
-	constexpr int samples_per_pixel = 10;
-	constexpr int max_depth = 10;
-
 	pixel_screen screen(imageWidth, imageHeight);
 	benchmark::DoNotOptimize(screen);
-
-	const point3 lookfrom(10, 3, 4);
-	const point3 lookat(0, 0, 1);
-	const vec3 vup(0, 1, 0);
-	constexpr auto fov = 30.0;
-	const auto dist_to_focus = (lookfrom - lookat).length();
-	constexpr auto aperture = 0.1;
 
 	const camera cam(lookfrom, lookat, vup, fov, aspect_ratio, aperture, dist_to_focus);
 
@@ -47,7 +47,7 @@ void BM_render(benchmark::State& state)
 	state.SetItemsProcessed((n * n + 4) * state.iterations());
 }
 
-BENCHMARK(BM_render)->Range(from, to)->Iterations(5)->Unit(benchmark::kMillisecond);
+BENCHMARK(BM_render)->Range(from, to)->Iterations(2)->Unit(benchmark::kMillisecond);
 
 void BM_full_no_write(benchmark::State& state)
 {
@@ -55,22 +55,8 @@ void BM_full_no_write(benchmark::State& state)
 
     for (auto _ : state)
     {
-		// Image
-		constexpr auto aspect_ratio = 4.0 / 3.0;
-		constexpr int imageWidth = 480;
-		constexpr int imageHeight = static_cast<int>(imageWidth / aspect_ratio);
-		constexpr int samples_per_pixel = 10;
-		constexpr int max_depth = 10;
-
 		pixel_screen screen(imageWidth, imageHeight);
 		benchmark::DoNotOptimize(screen);
-
-		const point3 lookfrom(10, 3, 4);
-		const point3 lookat(0, 0, 1);
-		const vec3 vup(0, 1, 0);
-		constexpr auto fov = 30.0;
-		const auto dist_to_focus = (lookfrom - lookat).length();
-		constexpr auto aperture = 0.1;
 
 		const camera cam(lookfrom, lookat, vup, fov, aspect_ratio, aperture, dist_to_focus);
 

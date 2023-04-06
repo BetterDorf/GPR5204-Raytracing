@@ -11,7 +11,12 @@ renderer::renderer(const int width, const int height) : _height(height), _width(
 }
 
 // Computes the color for a given ray following a gradient pattern
-color ray_color(ray& r, const hittable& world, int depth) {
+color ray_color(ray& r, const hittable& world, int depth)
+{
+#ifdef TRACY_ENABLE
+	ZoneScoped;
+#endif
+
 	// If we've exceeded the ray bounce limit, no more light is gathered.
 	if (depth <= 0)
 		return color(0, 0, 0);
@@ -22,10 +27,13 @@ color ray_color(ray& r, const hittable& world, int depth) {
 
 	for (int i = 0; i < depth; i++)
 	{
+#ifdef TRACY_ENABLE
+		ZoneScopedN("NotRecursiveHit");
+#endif
 		if (world.hit(r, 0.001, infinity, rec))
 		{
 #ifdef TRACY_ENABLE
-			ZoneScoped;
+			ZoneScopedN("OnHit");
 #endif
 			if (ray scattered; rec.Mat_ptr->scatter(r, rec, attenuation, scattered))
 			{
@@ -34,6 +42,9 @@ color ray_color(ray& r, const hittable& world, int depth) {
 			}
 			else
 			{
+#ifdef TRACY_ENABLE
+				ZoneScopedN("WaitOnReturn");
+#endif
 				return color(0, 0, 0);
 			}
 		}
@@ -76,7 +87,7 @@ void renderer::render_world(const hittable_list& world, const camera cam, const 
 
 void renderer::render_world(const world& world, const camera cam, const int samples_per_pixel, const int max_depth)
 {
-#pragma omp parallel for schedule(dynamic)
+#pragma omp parallel for schedule(static)
 	for (int h = _height - 1; h >= 0; --h)
 	{
 		for (int w = 0; w < _width; ++w)

@@ -1,5 +1,9 @@
 #include "bvh_node.hpp"
 
+#ifdef TRACY_ENABLE
+#include "tracy/Tracy.hpp"
+#endif
+
 bvh_node::bvh_node(hittable* first, hittable* second) : _first(first), _second(second)
 {
 	_box = _first->bounding_box();

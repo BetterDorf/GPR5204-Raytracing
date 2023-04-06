@@ -1,8 +1,15 @@
 #include "material.hpp"
 
+#ifdef TRACY_ENABLE
+#include "tracy/Tracy.hpp"
+#endif
 
 bool lambertian::scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered) const
 {
+#ifdef TRACY_ENABLE
+    ZoneScopedN("LambertianScatter");
+#endif
+
 	auto scatter_direction = rec.Normal + random_unit_vector();
 
 	// Catch degenerate scatter direction
@@ -17,6 +24,9 @@ bool lambertian::scatter(const ray& r_in, const hit_record& rec, color& attenuat
 
 bool metal::scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered) const
 {
+#ifdef TRACY_ENABLE
+    ZoneScopedN("MetalScatter");
+#endif
 	const vec3 reflected = reflect(unit_vector(r_in.direction()), rec.Normal);
 	scattered = ray(rec.P, reflected + Fuzz * random_in_unit_sphere());
 	attenuation = Albedo;
@@ -25,6 +35,9 @@ bool metal::scatter(const ray& r_in, const hit_record& rec, color& attenuation, 
 
 bool dielectric::scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered) const
 {
+#ifdef TRACY_ENABLE
+    ZoneScopedN("DielectricScatter");
+#endif
     attenuation = color(1.0, 1.0, 1.0);
     const double refraction_ratio = rec.Front_face ? (1.0 / Refrac_index) : Refrac_index;
 

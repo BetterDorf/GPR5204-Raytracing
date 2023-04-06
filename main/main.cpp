@@ -1,11 +1,7 @@
-#include <iostream>
-
 #include "camera.hpp"
 #include "pixels.hpp"
 
 #include "renderer.hpp"
-
-#include <omp.h>
 
 #include "world.hpp"
 
@@ -16,8 +12,8 @@
 int main()
 {
 	// Image
-	constexpr auto aspect_ratio = 4.0 / 3.0;
-	constexpr int imageWidth = 480;
+	constexpr auto aspect_ratio = 4.0 / 4.0;
+	constexpr int imageWidth = 400;
 	constexpr int imageHeight = static_cast<int>(imageWidth / aspect_ratio);
 	constexpr int samples_per_pixel = 200;
 	constexpr int max_depth = 30;
@@ -25,7 +21,7 @@ int main()
 	pixel_screen screen(imageWidth, imageHeight);
 	
 	// World
-	const auto world = world::random_scene(20);
+	const auto world = world::random_scene(2);
 
 	const point3 lookfrom(10, 3, 4);
 	const point3 lookat(0, 0, 1);
