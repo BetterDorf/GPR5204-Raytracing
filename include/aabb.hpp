@@ -14,6 +14,8 @@ public:
     [[nodiscard]] bool hit(const ray& r, double t_min, double t_max) const;
 
     [[nodiscard]] static aabb surrounding_box(const aabb& box0, const aabb& box1);
+    [[nodiscard]] static double get_dist_sqr(const aabb& box0, const aabb& box2);
+    [[nodiscard]] static aabb get_intersection(const aabb& box0, const aabb& box2);
 
     point3 minimum;
     point3 maximum;

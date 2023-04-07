@@ -21,7 +21,7 @@ int main()
 	pixel_screen screen(imageWidth, imageHeight);
 	
 	// World
-	const auto world = world::random_scene(2);
+	const auto world = world::random_scene(20);
 
 	const point3 lookfrom(10, 3, 4);
 	const point3 lookat(0, 0, 1);

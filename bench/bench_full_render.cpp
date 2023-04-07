@@ -2,18 +2,19 @@
 
 #include <iostream>
 #include "camera.hpp"
+#include "hittable_list.hpp"
 #include "pixels.hpp"
 #include "renderer.hpp"
 #include "world.hpp"
 
 constexpr int from = 0;
-constexpr int to = 22;
+constexpr int to = 30;
 
 // Image
 constexpr auto aspect_ratio = 4.0 / 3.0;
 constexpr int imageWidth = 480;
 constexpr int imageHeight = static_cast<int>(imageWidth / aspect_ratio);
-constexpr int samples_per_pixel = 200;
+constexpr int samples_per_pixel = 50;
 constexpr int max_depth = 30;
 
 const point3 lookfrom(10, 3, 4);
@@ -32,7 +33,7 @@ void BM_render(benchmark::State& state)
 
 	const camera cam(lookfrom, lookat, vup, fov, aspect_ratio, aperture, dist_to_focus);
 
-	const world world = world::random_scene(n);
+	const auto world = world::random_scene(n);
 
 	for (auto _ : state)
 	{
@@ -47,7 +48,7 @@ void BM_render(benchmark::State& state)
 	state.SetItemsProcessed((n * n + 4) * state.iterations());
 }
 
-BENCHMARK(BM_render)->Range(from, to)->Iterations(2)->Unit(benchmark::kMillisecond);
+BENCHMARK(BM_render)->Range(from, to)->MinTime(15)->Unit(benchmark::kMillisecond);
 
 void BM_full_no_write(benchmark::State& state)
 {
@@ -73,4 +74,4 @@ void BM_full_no_write(benchmark::State& state)
 	state.SetItemsProcessed((n * n + 4) * state.iterations());
 }
 
-BENCHMARK(BM_full_no_write)->Range(from, to)->Iterations(5)->Unit(benchmark::kMillisecond);
+BENCHMARK(BM_full_no_write)->Range(from, to)->MinTime(15)->Unit(benchmark::kMillisecond);

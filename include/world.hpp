@@ -4,15 +4,13 @@
 
 #include "bvh_node.hpp"
 
-static constexpr size_t WORLD_SIZE = 1000;
-
 class world : public hittable
 {
 public:
-	world()
+	world(const size_t world_size) : _world_size(world_size)
 	{
-		Spheres.reserve(WORLD_SIZE);
-		Nodes.reserve(WORLD_SIZE);
+		Spheres.reserve(_world_size);
+		Nodes.reserve(_world_size);
 	}
 
 	void add(sphere&&);
@@ -24,7 +22,7 @@ public:
 
 	[[nodiscard]] aabb bounding_box() const override
 	{
-		return Tree->bounding_box();
+		return Nodes[TreeStartIndex].bounding_box();
 	}
 
 	/**
@@ -37,5 +35,8 @@ public:
 public:
 	std::vector<sphere> Spheres;
 	std::vector<bvh_node> Nodes;
-	bvh_node* Tree;
+	int TreeStartIndex;
+
+private:
+	size_t _world_size;
 };

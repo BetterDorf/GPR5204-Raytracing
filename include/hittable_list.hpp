@@ -21,7 +21,7 @@ public:
     virtual bool hit(
         const ray& r, double t_min, double t_max, hit_record& rec) const override;
 
-	static hittable_list random_scene();
+	static hittable_list random_scene(int n);
 
 public:
     std::vector<std::unique_ptr<hittable>> objects;

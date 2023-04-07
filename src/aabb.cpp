@@ -28,3 +28,24 @@ aabb aabb::surrounding_box(const aabb& box0, const aabb& box1)
 
 	return aabb{ small, big };
 }
+
+double aabb::get_dist_sqr(const aabb& box0, const aabb& box2)
+{
+    auto ibox = get_intersection(box0, box2);
+    double distSq = 0.0;
+    for (int i = 0; i < 3; ++i)
+        if (ibox.minimum[i] > ibox.maximum[i])
+            distSq += ibox.minimum[i] - ibox.maximum[i];
+    return distSq;
+}
+
+aabb aabb::get_intersection(const aabb& box0, const aabb& box2)
+{
+    aabb res;
+    for (int i = 0; i < 3; ++i)
+    {
+        res.minimum[i] = std::max(box0.minimum[i], box2.minimum[i]);
+        res.maximum[i] = std::min(box0.maximum[i], box2.maximum[i]);
+    }
+    return res;
+}

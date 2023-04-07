@@ -32,7 +32,7 @@ void world::construct_bvh()
 	Nodes.clear();
 
 	// Setup to not check twice a sphere that was already processed
-	std::bitset<WORLD_SIZE * 2> checked;
+	std::vector<bool> checked(_world_size, false);
 
 	// Agglomerate the spheres into nodes with their closest neighbour
 	for (int i = 0; i < Spheres.size(); i++)
@@ -53,8 +53,7 @@ void world::construct_bvh()
 				continue;
 			}
 
-			// TODO take into consideration the radius of the spheres
-			const double dist = (Spheres[i].Center - Spheres[j].Center).length_squared();
+			const double dist = (Spheres[i].Center - Spheres[j].Center).length() - Spheres[i].Radius - Spheres[j].Radius;
 			if (dist < best_dist)
 			{
 				best_dist = dist;
@@ -62,7 +61,7 @@ void world::construct_bvh()
 			}
 		}
 
-		Nodes.emplace_back(bvh_node(&Spheres[i], &Spheres[best_index]));
+		Nodes.emplace_back(*this, true, i, best_index);
 
 		// Mark the j sphere as being treated
 		// No need to mark the i sphere as we won't get to this one ever again
@@ -70,10 +69,12 @@ void world::construct_bvh()
 		checked[best_index] = true;
 	}
 
+	checked.clear();
+	checked = std::vector<bool>(_world_size + _world_size / 2, false);
+
 	// Continually fuse nodes until we have one left
 	int iterationCount = 2;
 	int startPoint = 0;
-	checked.reset();
 	while (iterationCount > 1)
 	{
 		iterationCount = 0;
@@ -94,8 +95,7 @@ void world::construct_bvh()
 					continue;
 				}
 
-				// TODO use a better heuristic
-				const double dist = (Nodes[i].bounding_box().min() - Nodes[j].bounding_box().min()).length_squared();
+				const double dist = aabb::get_dist_sqr(Nodes[i].bounding_box(), Nodes[j].bounding_box());
 				if (dist < best_dist)
 				{
 					best_dist = dist;
@@ -104,11 +104,11 @@ void world::construct_bvh()
 			}
 
 			// Mark both nodes as used
-			checked.set(i, true);
-			checked.set(best_index, true);
+			checked[i] = true;
+			checked[best_index] = true;
 
 			// Create a new node that holds the two previous ones
-			Nodes.emplace_back(&Nodes[i], &Nodes[best_index]);
+			Nodes.emplace_back(*this, false, i, best_index);
 			iterationCount += 1;
 		}
 
@@ -116,7 +116,7 @@ void world::construct_bvh()
 	}
 
 	// When finished our last node is the first node in the tree
-	Tree = &Nodes[Nodes.size() - 1];
+	TreeStartIndex = Nodes.size() - 1;
 }
 
 bool world::hit(const ray& r, const double t_min, const double t_max, hit_record& rec) const
@@ -124,7 +124,7 @@ bool world::hit(const ray& r, const double t_min, const double t_max, hit_record
 #ifdef TRACY_ENABLE
 	ZoneScoped;
 #endif
-	return Tree->hit(r, t_min, t_max, rec);
+	return Nodes[TreeStartIndex].hit(r, t_min, t_max, rec);
 }
 
 world world::random_scene(const int sqrd_object_count)
@@ -132,7 +132,7 @@ world world::random_scene(const int sqrd_object_count)
 #ifdef TRACY_ENABLE
 	ZoneScoped;
 #endif
-	world world;
+	world world(sqrd_object_count * sqrd_object_count + sqrd_object_count / 2 + 10);
 
 	const auto ground_material = std::make_shared<lambertian>(color(0.5, 0.5, 0.5));
 	world.add(point3(0, -1000, 0), 1000, ground_material);

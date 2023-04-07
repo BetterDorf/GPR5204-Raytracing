@@ -24,17 +24,17 @@ bool hittable_list::hit(const ray& r, const double t_min, const double t_max, hi
     return hit_anything;
 }
 
-hittable_list hittable_list::random_scene()
+hittable_list hittable_list::random_scene(const int n)
 {
 	hittable_list world;
 
 	auto ground_material = std::make_shared<lambertian>(color(0.5, 0.5, 0.5));
 	world.add(std::make_unique<sphere>(point3(0, -1000, 0), 1000, ground_material));
 
-	for (int a = -11; a < 11; a++) {
-		for (int b = -11; b < 11; b++) {
+	for (int a = 0; a < n; a++) {
+		for (int b = 0; b < n; b++) {
 			const auto choose_mat = random_double();
-			point3 center(a + 0.9 * random_double(), 0.2, b + 0.9 * random_double());
+			point3 center(a - 11 + 0.9 * random_double(), 0.2, b - 11 + 0.9 * random_double());
 
 			if ((center - point3(4, 0.2, 0)).length() > 0.9) {
 				std::shared_ptr<material> sphere_material;
