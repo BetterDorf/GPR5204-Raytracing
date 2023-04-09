@@ -1,4 +1,5 @@
 #include "camera.hpp"
+#include "hittable_list.hpp"
 #include "pixels.hpp"
 
 #include "renderer.hpp"
@@ -12,16 +13,16 @@
 int main()
 {
 	// Image
-	constexpr auto aspect_ratio = 4.0 / 4.0;
-	constexpr int imageWidth = 400;
+	constexpr auto aspect_ratio = 4.0 / 3.0;
+	constexpr int imageWidth = 480;
 	constexpr int imageHeight = static_cast<int>(imageWidth / aspect_ratio);
-	constexpr int samples_per_pixel = 200;
+	constexpr int samples_per_pixel = 50;
 	constexpr int max_depth = 30;
 
 	pixel_screen screen(imageWidth, imageHeight);
 	
 	// World
-	const auto world = world::random_scene(20);
+	const auto world = hittable_list::random_scene(30);
 
 	const point3 lookfrom(10, 3, 4);
 	const point3 lookat(0, 0, 1);

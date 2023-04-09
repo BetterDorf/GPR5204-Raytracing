@@ -64,7 +64,7 @@ color ray_color(ray& r, const hittable& world, int depth)
 
 void renderer::render_world(const hittable_list& world, const camera cam, const int samples_per_pixel, const int max_depth)
 {
-#pragma omp parallel for schedule(dynamic)
+#pragma omp parallel for schedule(static)
 	for (int h = _height - 1; h >= 0; --h)
 	{
 		for (int w = 0; w < _width; ++w)

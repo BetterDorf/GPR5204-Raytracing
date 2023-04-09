@@ -7,7 +7,7 @@
 #include "renderer.hpp"
 #include "world.hpp"
 
-constexpr int from = 0;
+constexpr int from = 1;
 constexpr int to = 30;
 
 // Image
@@ -33,10 +33,9 @@ void BM_render(benchmark::State& state)
 
 	const camera cam(lookfrom, lookat, vup, fov, aspect_ratio, aperture, dist_to_focus);
 
-	const auto world = world::random_scene(n);
-
 	for (auto _ : state)
 	{
+		const auto world = hittable_list::random_scene(n);
 		renderer render(imageWidth, imageHeight);
 		render.render_world(world, cam, samples_per_pixel, max_depth);
 
