@@ -51,7 +51,7 @@ foreach(BENCH_FILE ${BENCH_FILES})
         target_compile_options(${BENCH_NAME} PUBLIC /arch:AVX2 /Oi /GR- /EHs-c- /FA /Oy- /GL)
         target_link_options(${BENCH_NAME} PUBLIC /LTCG)
     else()
-        target_compile_options(${BENCH_NAME} PUBLIC "-march=haswell" "-masm=intel" -fno-rtti -fno-exceptions -save-temps
+        target_compile_options(${BENCH_NAME} PUBLIC -OFast "-march=haswell" "-masm=intel" -fno-rtti -fno-exceptions -save-temps
                 -fno-omit-frame-pointer -flto -ffast-math)
         target_link_options(${BENCH_NAME} PUBLIC -flto)
     endif()
