@@ -1,7 +1,6 @@
 #include "renderer.hpp"
 
 #include "hittable_list.hpp"
-#include "world.hpp"
 #include "camera.hpp"
 #include "ray.hpp"
 #include "material.hpp"
@@ -35,7 +34,7 @@ color ray_color(ray& r, const hittable& world, int depth)
 #ifdef TRACY_ENABLE
 			ZoneScopedN("OnHit");
 #endif
-			if (ray scattered; rec.Mat_ptr->scatter(r, rec, attenuation, scattered))
+			if (ray scattered; rec.mat_ptr->scatter(r, rec, attenuation, scattered))
 			{
 				finalColor = finalColor * attenuation;
 				r = scattered;
@@ -72,25 +71,6 @@ void renderer::render_world(const hittable_list& world, const camera cam, const 
 #ifdef TRACY_ENABLE
 			ZoneScoped;
 #endif
-			color pixel_color(0, 0, 0);
-			for (int s = 0; s < samples_per_pixel; ++s) {
-				const auto u = (w + random_double()) / (_width - 1);
-				const auto v = (h + random_double()) / (_height - 1);
-				ray r = cam.get_ray(u, v);
-				pixel_color += ray_color(r, world, max_depth);
-				_screen.draw(w, h, pixel_color);
-			}
-		}
-	}
-}
-
-void renderer::render_world(const world& world, const camera cam, const int samples_per_pixel, const int max_depth)
-{
-#pragma omp parallel for schedule(static)
-	for (int h = _height - 1; h >= 0; --h)
-	{
-		for (int w = 0; w < _width; ++w)
-		{
 			color pixel_color(0, 0, 0);
 			for (int s = 0; s < samples_per_pixel; ++s) {
 				const auto u = (w + random_double()) / (_width - 1);

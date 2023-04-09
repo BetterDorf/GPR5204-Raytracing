@@ -1,4 +1,6 @@
 #pragma once
+#include <vector>
+
 #include "color.hpp"
 
 class pixel_screen

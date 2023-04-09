@@ -11,7 +11,6 @@ public:
 	renderer(int width, int height);
 
 	void render_world(const hittable_list& world, camera cam, int samples_per_pixel, int max_depth);
-	void render_world(const world& world, camera cam, int samples_per_pixel, int max_depth);
 
 	void write_out_screen(int height, int width, int samples_per_pixel) const;
 private:

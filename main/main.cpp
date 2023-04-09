@@ -1,10 +1,8 @@
 #include "camera.hpp"
 #include "hittable_list.hpp"
-#include "pixels.hpp"
+//#include "pixels.hpp"
 
 #include "renderer.hpp"
-
-#include "world.hpp"
 
 #ifdef TRACY_ENABLE
 #include "tracy/Tracy.hpp"
